@@ -16,22 +16,53 @@
         <div class="card">
             <div class="card-body">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Enter Your Memo Here...." aria-label="Recipient's username" aria-describedby="button-addon2">
-                    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+                    @if(request()->has('id'))
+                        <form method="POST" action="{{route('updateTodo', request()->has('id'))}}">
+                            @method('put')
+                            @csrf
+                            <input type="text" value="{{request()->todo}}" name="todo" class="form-control" placeholder="Enter Your Memo Here...." aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <input type="hidden" name="id" value="{{request()->id}}">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">UPDATE</button>
+                        </form>
+                    @else
+                        <form method="POST" action="{{route('addTodo')}}">
+                            @csrf
+                            <input type="text" value="{{request()->todo}}" name="todo" class="form-control" placeholder="Enter Your Memo Here...." aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Add</button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>
+        @if(\Session::has('success'))
+            <div class="alert alert-success">{!! \Session::get('success') !!}</div>
+        @endif
     </div>
     <div class="container-fluid mt-2 bg-primary.bg-gradient">
         <div class="card">
             <div class="card-body">
-                <ul class="list-group">
-                    <li class="list-group-item">An item</li>
-                    <li class="list-group-item">A second item</li>
-                    <li class="list-group-item">A third item</li>
-                    <li class="list-group-item">A fourth item</li>
-                    <li class="list-group-item">And a fifth one</li>
-                </ul>
+                @foreach($todoAllData as $todoData)
+                    <ul class="list-group">
+                        <li class="list-group-item">{{$todoData->todo}}</li>
+                                <span class="badge rounded-pill">
+                            <a
+                                href="{{route('zihad', ['todo'=>$todoData->todo, 'id'=>$todoData->id])}}"
+                                class="btn btn btn-secondary btn-sm"
+                            >Edit
+                            </a>
+                            <a
+                                href="#"
+                                onclick="event.preventDefault();document.getElementById('delete-to').submit();"
+                                class="btn btn btn-danger btn-sm"
+                            >Delete
+                            </a>
+                            <form id="delete-to" action="{{route('deleteTodo', $todoData->id)}}" method="POST" class="d-none">
+                                @method('delete')
+                                @csrf
+                            </form>
+                        </span>
+                    </ul>
+                @endforeach
             </div>
         </div>
     </div>

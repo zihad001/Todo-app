@@ -18,3 +18,10 @@ Route::get('/', function () {
 });
 
 Route::get('/akash', [App\Http\Controllers\TodoController::class, 'index'])->name('zihad');
+
+Route::post('/add', [App\Http\Controllers\TodoController::class, 'add'])->name('addTodo');
+
+Route::delete('/delete/{id}', [App\Http\Controllers\TodoController::class, 'destroy'])->name('deleteTodo');
+
+Route::put('/update/{id}', [App\Http\Controllers\TodoController::class, 'update'])->name('updateTodo');
+
